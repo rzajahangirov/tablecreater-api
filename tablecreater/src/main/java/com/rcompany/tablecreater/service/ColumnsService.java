@@ -9,4 +9,6 @@ public interface ColumnsService {
     void createColumn(ColumnCreateDto columnCreateDto);
 
     List<ColumnReadDto> getAllColumns();
+
+    void deleteAll();
 }

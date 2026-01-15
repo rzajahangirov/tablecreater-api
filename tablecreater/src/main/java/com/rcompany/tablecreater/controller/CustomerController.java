@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
+
     @PostMapping("/create")
     public ResponseEntity<Void> create(@RequestBody CustomerCreateDto customerCreateDto) {
         customerService.createCustomer(customerCreateDto);

@@ -41,6 +41,11 @@ public class ColumnsServiceImpl implements ColumnsService {
         return columnReadDtos;
     }
 
+    @Override
+    public void deleteAll() {
+        columnsRepository.deleteAll();
+    }
+
     private ColumnReadDto mapToDto(Columns column) {
         ColumnReadDto columnReadDto = new ColumnReadDto();
         columnReadDto.setId(column.getId());

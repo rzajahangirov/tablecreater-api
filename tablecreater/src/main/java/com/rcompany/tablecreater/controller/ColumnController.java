@@ -24,5 +24,9 @@ public class ColumnController {
         List<ColumnReadDto> columnReadDtoList = columnsService.getAllColumns();
         return ResponseEntity.ok(columnReadDtoList);
     }
-
+    @DeleteMapping
+    public ResponseEntity<Void> delete(){
+        columnsService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }
