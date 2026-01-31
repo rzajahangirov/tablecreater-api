@@ -2,14 +2,11 @@ package com.rcompany.tablecreater.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "customers")
 public class Customer {
@@ -19,11 +16,14 @@ public class Customer {
     private Long id;
 
     private String name;
-    private String phoneNumber;
+    private String phone;
+    private String email;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Datas> data = new ArrayList<>();
+    // Müştərinin etdiyi bütün alqı-satqılar
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "customers", fetch = FetchType.LAZY)
-    private List<Columns> columns = new ArrayList<>();
+    // Müştəriyə özəl cədvəl strukturu (Sütunlar və Düsturlar)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<CustomColumn> customColumns = new ArrayList<>();
 }
