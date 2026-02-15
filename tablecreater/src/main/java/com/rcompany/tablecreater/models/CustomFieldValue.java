@@ -5,6 +5,8 @@ import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "custom_field_values")
 public class CustomFieldValue {

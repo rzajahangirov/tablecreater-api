@@ -8,6 +8,8 @@ import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "custom_columns")
 public class CustomColumn {

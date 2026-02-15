@@ -7,6 +7,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "customers")
 public class Customer {
@@ -23,7 +25,4 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
 
-    // Müştəriyə özəl cədvəl strukturu (Sütunlar və Düsturlar)
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<CustomColumn> customColumns = new ArrayList<>();
 }
