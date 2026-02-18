@@ -16,13 +16,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class TransactionCreateDto {
-    @NotNull(message = "Müştəri ID-si mütləqdir")
-    private Long customerId;
-
     @NotNull(message = "Tarix qeyd edilməlidir")
     private LocalDate transactionDate;
 
-    private LocalDate paymentDate;
 
     @NotBlank(message = "Məhsul adı boş ola bilməz")
     private String productName;

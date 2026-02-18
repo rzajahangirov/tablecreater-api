@@ -26,11 +26,10 @@ public class TransactionReadDto {
     private TransportType transportType;
     private Integer vehicleCount;
     private BigDecimal pricePerVehicle;
-    private LocalDate paymentDate;
     private BigDecimal paidAmount;
     private PaymentCurrency paidCurrency;
     private String documentImageUrl;
     private BigDecimal historicalExchangeRate;
-    private BigDecimal historicalTotalExpenseRub;
-    private BigDecimal historicalRemainingDebtRub;
+    private BigDecimal historicalTotalExpenseUsd;
+    private BigDecimal historicalRemainingDebtUsd;
 }

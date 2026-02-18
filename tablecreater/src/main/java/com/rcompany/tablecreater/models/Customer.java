@@ -1,5 +1,6 @@
 package com.rcompany.tablecreater.models;
 
+import com.rcompany.tablecreater.enums.CustomerType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class Customer {
     private String name;
     private String phone;
     private String email;
+    @Enumerated(EnumType.STRING)
+    private CustomerType type = CustomerType.ACTIVE;
 
     // Müştərinin etdiyi bütün alqı-satqılar
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

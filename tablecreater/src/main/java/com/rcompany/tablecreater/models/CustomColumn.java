@@ -21,10 +21,6 @@ public class CustomColumn {
     @Column(nullable = false)
     private String name; // Məs: "Gömrük Rüsumu" və ya "Sürücü Adı"
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
-
     // === ƏSAS YENİLİK ===
 
     @Enumerated(EnumType.STRING)

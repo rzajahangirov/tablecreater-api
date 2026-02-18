@@ -5,6 +5,7 @@ import com.rcompany.tablecreater.enums.TransportType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +53,6 @@ public class Transaction {
     @Column(precision = 19, scale = 2)
     private BigDecimal pricePerVehicle; // Maşın qiyməti (Tırsa $, Gəmidsə ₽)
 
-    private LocalDate paymentDate;      // Pulun verilmə tarixi
-
     // --- Ödəniş ---
     @Column(precision = 19, scale = 2)
     private BigDecimal paidAmount;      // Verilən pul (məbləğ)
@@ -69,17 +68,19 @@ public class Transaction {
     @Column(nullable = false, precision = 10, scale = 4)
     private BigDecimal historicalExchangeRate;
 
-    // O vaxtkı məzənnə ilə hesablanmış ümumi xərc (Rubl)
+    // O vaxtkı məzənnə ilə hesablanmış ümumi xərc (USD)
     @Column(precision = 19, scale = 2)
-    private BigDecimal historicalTotalExpenseRub;
+    private BigDecimal historicalTotalExpenseUsd;
 
-    // O vaxtkı məzənnə ilə qalan borc (Rubl)
+    // O vaxtkı məzənnə ilə qalan pul (USD)
     @Column(precision = 19, scale = 2)
-    private BigDecimal historicalRemainingDebtRub;
+    private BigDecimal historicalRemainingDebtUsd;
 
     // === DYNAMIC DATA LINK ===
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomFieldValue> customValues = new ArrayList<>();
+
+    private Boolean isCompleted = Boolean.FALSE;
 
     // === AVTOMATİK HESABLAMA (Yalnız Historical Data üçün) ===
     @PrePersist
@@ -92,34 +93,39 @@ public class Transaction {
                 ? weightTon.multiply(pricePerTonRub)
                 : BigDecimal.ZERO;
 
+        // Convert to USD
+        goodsCostRub = goodsCostRub.multiply(historicalExchangeRate);
+
         // 2. Nəqliyyat Xərci (Rubla çevrilməsi)
         BigDecimal transportCostRub = BigDecimal.ZERO;
         if (vehicleCount != null && pricePerVehicle != null) {
             BigDecimal totalTransportRaw = pricePerVehicle.multiply(BigDecimal.valueOf(vehicleCount));
 
-            if (transportType == TransportType.TRUCK) {
-                // TIR (USD) -> Rubla çevir (Həmin günün məzənnəsi ilə)
+            if (transportType != TransportType.TRUCK) {
+                //GƏMİ (RUB) -> USD çevir (Həmin günün məzənnəsi ilə)
                 transportCostRub = totalTransportRaw.multiply(historicalExchangeRate);
             } else {
-                // GƏMİ (RUB) -> Olduğu kimi qalır
+                // TIR (USD) -> Olduğu kimi qalır
                 transportCostRub = totalTransportRaw;
             }
         }
 
-        // 3. Yekun Xərc (Rubl) - Historical
-        this.historicalTotalExpenseRub = goodsCostRub.add(transportCostRub);
+        // 3. Yekun Xərc (USD) - Historical
+        this.historicalTotalExpenseUsd = goodsCostRub.add(transportCostRub);
 
-        // 4. Ödənilən Pulun Rubl qarşılığı - Historical
-        BigDecimal paidInRub = BigDecimal.ZERO;
+        // 4. Ödənilən Pulun USD qarşılığı - Historical
+        BigDecimal paidInUsd = BigDecimal.ZERO;
+
         if (paidAmount != null) {
-            if (paidCurrency == PaymentCurrency.USD) {
-                paidInRub = paidAmount.multiply(historicalExchangeRate);
+            if (paidCurrency == PaymentCurrency.RUB) {
+                paidInUsd = paidAmount.multiply(historicalExchangeRate);
             } else {
-                paidInRub = paidAmount;
+                paidInUsd = paidAmount;
             }
         }
 
+
         // 5. Qalan Borc - Historical
-        this.historicalRemainingDebtRub = this.historicalTotalExpenseRub.subtract(paidInRub);
+        this.historicalRemainingDebtUsd = paidInUsd.subtract(this.historicalTotalExpenseUsd);
     }
 }
