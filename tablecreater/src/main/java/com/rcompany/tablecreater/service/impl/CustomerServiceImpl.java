@@ -2,6 +2,7 @@ package com.rcompany.tablecreater.service.impl;
 
 import com.rcompany.tablecreater.dtos.customer.CustomerCreateDto;
 import com.rcompany.tablecreater.dtos.customer.CustomerReadDto;
+import com.rcompany.tablecreater.dtos.customer.CustomerUpdateDto;
 import com.rcompany.tablecreater.enums.CustomerType;
 import com.rcompany.tablecreater.models.Customer;
 import com.rcompany.tablecreater.repository.CustomerRepository;
@@ -70,6 +71,15 @@ public class CustomerServiceImpl implements CustomerService {
         return customers.stream()
                 .map(this::mapToReadDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerReadDto updateCustomer(Long id, CustomerUpdateDto updateDto) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
+        if (updateDto.getName() != null) customer.setName(updateDto.getName());
+        if (updateDto.getPhone() != null) customer.setPhone(updateDto.getPhone());
+        if (updateDto.getEmail() != null) customer.setEmail(updateDto.getEmail());
+        return mapToReadDto(customerRepository.save(customer));
     }
 
 

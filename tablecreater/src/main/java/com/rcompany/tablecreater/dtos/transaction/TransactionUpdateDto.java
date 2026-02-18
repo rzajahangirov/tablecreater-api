@@ -16,10 +16,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionCreateDto {
+public class TransactionUpdateDto {
     @NotNull(message = "Tarix qeyd edilməlidir")
     private LocalDate transactionDate;
-
 
     @NotBlank(message = "Məhsul adı boş ola bilməz")
     private String productName;
@@ -55,4 +54,5 @@ public class TransactionCreateDto {
     private BigDecimal historicalExchangeRate;
 
     private MultipartFile document;
+    private Boolean isCompleted;
 }

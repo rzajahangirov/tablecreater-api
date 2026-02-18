@@ -6,20 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionReadDto {
-    private Long id;
-    private Long customerId;
-    private String customerName;
+public class TransactionUpdateReadDto {
     private LocalDate transactionDate;
-    private LocalDate createdAt;
     private String productName;
     private String receivingCompany;
     private BigDecimal weightTon;
@@ -27,10 +23,9 @@ public class TransactionReadDto {
     private TransportType transportType;
     private Integer vehicleCount;
     private BigDecimal pricePerVehicle;
-    private BigDecimal paidAmount;
     private PaymentCurrency paidCurrency;
-    private String documentPath;
+    private BigDecimal paidAmount;
     private BigDecimal historicalExchangeRate;
-    private BigDecimal historicalTotalExpenseUsd;
-    private BigDecimal historicalRemainingDebtUsd;
+    private String documentImageUrl;
+    private Boolean isCompleted;
 }

@@ -1,8 +1,6 @@
 package com.rcompany.tablecreater.controller;
 
-import com.rcompany.tablecreater.dtos.transaction.TransactionCreateDto;
-import com.rcompany.tablecreater.dtos.transaction.TransactionReadDto;
-import com.rcompany.tablecreater.dtos.transaction.TranslationExpenseDto;
+import com.rcompany.tablecreater.dtos.transaction.*;
 import com.rcompany.tablecreater.payloads.ResponseDto;
 import com.rcompany.tablecreater.repository.CustomFieldValueRepository;
 import com.rcompany.tablecreater.repository.CustomerRepository;
@@ -72,6 +70,29 @@ public class TransactionController {
         customerRepository.deleteAll();
 
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDto<TransactionReadDto>> updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody TransactionUpdateDto updateDto) {
+
+        TransactionReadDto updated = transactionService.updateTransaction(id, updateDto);
+
+        ResponseDto<TransactionReadDto> response = new ResponseDto<>();
+        response.setData(updated);
+        response.setMessage("Transaction updated successfully");
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}/for-update")
+    public ResponseEntity<ResponseDto<TransactionUpdateReadDto>> getTransactionForUpdate(@PathVariable Long id) {
+        TransactionUpdateReadDto data = transactionService.getTransactionForUpdate(id);
+
+        ResponseDto<TransactionUpdateReadDto> response = new ResponseDto<>();
+        response.setData(data);
+        response.setMessage("Transaction data retrieved for editing");
+
+        return ResponseEntity.ok(response);
     }
 
 }

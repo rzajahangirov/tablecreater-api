@@ -2,6 +2,7 @@ package com.rcompany.tablecreater.controller;
 
 import com.rcompany.tablecreater.dtos.customer.CustomerCreateDto;
 import com.rcompany.tablecreater.dtos.customer.CustomerReadDto;
+import com.rcompany.tablecreater.dtos.customer.CustomerUpdateDto;
 import com.rcompany.tablecreater.enums.CustomerType;
 import com.rcompany.tablecreater.payloads.ResponseDto;
 import com.rcompany.tablecreater.repository.CustomerRepository;
@@ -67,6 +68,15 @@ public class CustomerController {
         response.setMessage(results.isEmpty() ? "No customers found" : "Customers found successfully");
 
         return ResponseEntity.ok(response);
+    }
+    @PutMapping("update/{id}")
+    public ResponseEntity<ResponseDto<CustomerReadDto>> update(@PathVariable Long id, @RequestBody CustomerUpdateDto updateDto) {
+        CustomerReadDto readDto = customerService.updateCustomer(id, updateDto);
+
+        ResponseDto<CustomerReadDto> responseDto = new ResponseDto<>();
+        responseDto.setData(readDto);
+        responseDto.setMessage("Customer updated");
+        return ResponseEntity.ok(responseDto);
     }
 
 
