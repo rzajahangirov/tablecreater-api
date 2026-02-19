@@ -29,6 +29,7 @@ public class CustomFieldValue {
     // Əgər ColumnInputType = MANUAL-dırsa, istifadəçi bura yazır.
     // Əgər CALCULATED-dirsə, bu sahə boş qala bilər (çünki real vaxtda hesablanır)
     // və ya cache məqsədi ilə nəticə bura yazıla bilər.
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "field_value")
     private String value;
+
 }

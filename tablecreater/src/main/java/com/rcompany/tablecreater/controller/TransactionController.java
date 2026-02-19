@@ -9,6 +9,7 @@ import com.rcompany.tablecreater.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,8 @@ public class TransactionController {
     private final CustomFieldValueRepository customFieldValueRepository;
     private final CustomerRepository customerRepository;
 
-    @PostMapping("/{customerId}")
-    public ResponseEntity<TransactionReadDto> createTransaction(@PathVariable Long customerId, @Valid @RequestBody TransactionCreateDto createDto) {
+    @PostMapping(value = "/{customerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TransactionReadDto> createTransaction(@PathVariable Long customerId, @Valid @ModelAttribute TransactionCreateDto createDto) {
         return ResponseEntity.ok(transactionService.createTransaction(createDto, customerId));
     }
     @GetMapping("/{customerId}")
@@ -71,10 +72,10 @@ public class TransactionController {
 
         return ResponseEntity.noContent().build();
     }
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto<TransactionReadDto>> updateTransaction(
             @PathVariable Long id,
-            @Valid @RequestBody TransactionUpdateDto updateDto) {
+            @Valid @ModelAttribute TransactionUpdateDto updateDto) {
 
         TransactionReadDto updated = transactionService.updateTransaction(id, updateDto);
 

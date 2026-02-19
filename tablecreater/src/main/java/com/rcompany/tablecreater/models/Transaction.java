@@ -60,7 +60,8 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private PaymentCurrency paidCurrency; // Verilən pulun valyutası (USD/RUB)
 
-    private String documentImageUrl;
+    @Column(name = "file_path")
+    private String document;
 
     // === HISTORICAL DATA (Keçmiş Hesabatlar Üçün Sabitlər) ===
 

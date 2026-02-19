@@ -42,17 +42,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(c->c.disable())
-                .authorizeHttpRequests(request->{
+                .csrf(c -> c.disable())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                )
+                .authorizeHttpRequests(request -> {
                     request.requestMatchers(SWAGGER_WHITELIST).permitAll();
                     request.requestMatchers("/**").permitAll();
                     request.anyRequest().authenticated();
                 });
+
         http.httpBasic(basic -> basic.authenticationEntryPoint(authEntryPoint))
                 .exceptionHandling(Customizer.withDefaults());
+
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

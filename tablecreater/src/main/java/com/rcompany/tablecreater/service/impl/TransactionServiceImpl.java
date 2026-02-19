@@ -60,11 +60,15 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setPricePerVehicle(createDto.getPricePerVehicle());
         transaction.setPaidAmount(createDto.getPaidAmount());
         transaction.setPaidCurrency(createDto.getPaidCurrency());
-        transaction.setDocumentImageUrl(documentPath);
+        transaction.setDocument(documentPath);
         transaction.setHistoricalExchangeRate(createDto.getHistoricalExchangeRate());
 
 
         Transaction transactionSaved = transactionRepository.save(transaction);
+
+        System.out.println("ID: " + transactionSaved.getId());
+        System.out.println("Saved Document Path: " + transactionSaved.getDocument());
+
         return mapToReadDto(transactionSaved);
     }
 
@@ -127,7 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setPaidCurrency(updateDto.getPaidCurrency());
         transaction.setPaidAmount(updateDto.getPaidAmount());
         transaction.setHistoricalExchangeRate(updateDto.getHistoricalExchangeRate());
-        transaction.setDocumentImageUrl(documentPath);
+        transaction.setDocument(documentPath);
         transaction.setIsCompleted(updateDto.getIsCompleted());
 
         Transaction updatedTransaction = transactionRepository.save(transaction);
@@ -152,7 +156,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .paidCurrency(transaction.getPaidCurrency())
                 .paidAmount(transaction.getPaidAmount())
                 .historicalExchangeRate(transaction.getHistoricalExchangeRate())
-                .documentImageUrl(transaction.getDocumentImageUrl())
+                .documentImageUrl(transaction.getDocument())
                 .isCompleted(transaction.getIsCompleted())
                 .build();
     }
@@ -204,6 +208,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionReadDto mapToReadDto(Transaction transaction) {
         TransactionReadDto transactionReadDto = modelMapper.map(transaction, TransactionReadDto.class);
+        transactionReadDto.setDocumentPath(transaction.getDocument());
         transactionReadDto.setCustomerName(transaction.getCustomer().getName());
         transactionReadDto.setCustomerId(transaction.getCustomer().getId());
         return transactionReadDto;
