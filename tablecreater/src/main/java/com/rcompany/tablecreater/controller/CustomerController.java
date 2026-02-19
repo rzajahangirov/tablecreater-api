@@ -19,7 +19,6 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
-    private final CustomerRepository customerRepository;
 
     @PostMapping
     public ResponseEntity<ResponseDto<CustomerReadDto>> create(@RequestBody CustomerCreateDto request) {
@@ -77,6 +76,11 @@ public class CustomerController {
         responseDto.setData(readDto);
         responseDto.setMessage("Customer updated");
         return ResponseEntity.ok(responseDto);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.ok("Customer deleted");
     }
 
 

@@ -30,7 +30,6 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setPhone(request.getPhone());
-        customer.setEmail(request.getEmail());
 
         Customer savedCustomer = customerRepository.save(customer);
 
@@ -66,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerReadDto> searchCustomers(String keyword) {
         List<Customer> customers = customerRepository
-                .findByNameContainingIgnoreCaseOrPhoneContainingOrEmailContainingIgnoreCase(keyword, keyword, keyword);
+                .findByNameContainingIgnoreCaseOrPhoneContainingIgnoreCase(keyword, keyword);
 
         return customers.stream()
                 .map(this::mapToReadDto)
@@ -78,8 +77,15 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
         if (updateDto.getName() != null) customer.setName(updateDto.getName());
         if (updateDto.getPhone() != null) customer.setPhone(updateDto.getPhone());
-        if (updateDto.getEmail() != null) customer.setEmail(updateDto.getEmail());
         return mapToReadDto(customerRepository.save(customer));
+    }
+
+    @Override
+    public void deleteCustomer(Long id) {
+        if (!customerRepository.existsById(id)) {
+            throw new RuntimeException("Customer not found");
+        }
+        customerRepository.deleteById(id);
     }
 
 

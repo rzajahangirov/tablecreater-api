@@ -8,11 +8,14 @@ import com.rcompany.tablecreater.repository.TransactionRepository;
 import com.rcompany.tablecreater.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -63,15 +66,6 @@ public class TransactionController {
 
         return ResponseEntity.ok(responseDto);
     }
-    @DeleteMapping("/reset")
-    public ResponseEntity<Void> reset() {
-
-        customFieldValueRepository.deleteAll();
-        transactionRepository.deleteAll();
-        customerRepository.deleteAll();
-
-        return ResponseEntity.noContent().build();
-    }
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto<TransactionReadDto>> updateTransaction(
             @PathVariable Long id,
@@ -94,6 +88,30 @@ public class TransactionController {
         response.setMessage("Transaction data retrieved for editing");
 
         return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.ok("Transaction deleted successfully");
+    }
+
+    @GetMapping("/export/{customerId}")
+    public ResponseEntity<InputStreamResource> export(@PathVariable Long customerId) {
+
+        ByteArrayInputStream excel =
+                transactionService.exportCustomerTransactions(customerId);
+
+        String fileName = "transactions_customer_" + customerId + ".xlsx";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(
+                        MediaType.parseMediaType(
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(excel));
     }
 
 }

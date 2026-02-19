@@ -2,6 +2,7 @@ package com.rcompany.tablecreater.service;
 
 import com.rcompany.tablecreater.dtos.transaction.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,4 +18,8 @@ public interface TransactionService {
      TransactionReadDto updateTransaction(Long id, TransactionUpdateDto updateDto);
 
      TransactionUpdateReadDto getTransactionForUpdate(Long id);
+
+     void deleteTransaction(Long id);
+
+     ByteArrayInputStream exportCustomerTransactions(Long customerId);
 }

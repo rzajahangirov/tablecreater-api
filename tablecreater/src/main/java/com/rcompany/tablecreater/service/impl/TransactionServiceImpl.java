@@ -2,6 +2,7 @@ package com.rcompany.tablecreater.service.impl;
 
 import com.rcompany.tablecreater.dtos.transaction.*;
 import com.rcompany.tablecreater.enums.PaymentCurrency;
+import com.rcompany.tablecreater.excel.TransactionExcelExporter;
 import com.rcompany.tablecreater.exceptions.ApiException;
 import com.rcompany.tablecreater.exceptions.ResourceNotFoundException;
 import com.rcompany.tablecreater.models.Customer;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,6 +162,27 @@ public class TransactionServiceImpl implements TransactionService {
                 .documentImageUrl(transaction.getDocument())
                 .isCompleted(transaction.getIsCompleted())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void deleteTransaction(Long id) {
+        if (!transactionRepository.existsById(id)) {
+            throw new RuntimeException("Transaction not found with id: " + id);
+        }
+        transactionRepository.deleteById(id);
+    }
+
+    @Override
+    public ByteArrayInputStream exportCustomerTransactions(Long customerId) {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        List<Transaction> transactions =
+                transactionRepository.findByCustomerId(customerId);
+
+        return TransactionExcelExporter.export(customer, transactions);
     }
 
     private String saveFile(MultipartFile file) {
